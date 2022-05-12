@@ -1,10 +1,10 @@
-import './ImageGallery.css';
+import s from './ImageGallery.module.css';
 import ImageGalleryItem from './ImageGalleryItem/ImageGalleryItem';
 import PropTypes from 'prop-types';
 
 export default function ImageGallery({ params, openModal }) {
    return (
-      <ul className="ImageGallery">
+      <ul className={s.ImageGallery}>
          {params.map(({ id, webformatURL, largeImageURL, tags }) => (
             <ImageGalleryItem
                key={id}

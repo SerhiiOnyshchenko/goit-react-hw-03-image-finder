@@ -1,10 +1,14 @@
-import './ImageGalleryItem.css';
+import s from './ImageGalleryItem.module.css';
 import PropTypes from 'prop-types';
 
 export default function ImageGalleryItem({ webformatURL, alt, onOpen }) {
    return (
-      <li className="ImageGalleryItem" onClick={onOpen}>
-         <img className="ImageGalleryItem-image" src={webformatURL} alt={alt} />
+      <li className={s.ImageGalleryItem} onClick={onOpen}>
+         <img
+            className={s.ImageGalleryItemImage}
+            src={webformatURL}
+            alt={alt}
+         />
       </li>
    );
 }
