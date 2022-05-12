@@ -1,4 +1,9 @@
-.BoxLoader {
+.BoxLoader1 {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.BoxLoader2 {
 	display: flex;
 	justify-content: center;
 	align-items: center;

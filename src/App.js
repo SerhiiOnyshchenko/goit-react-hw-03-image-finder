@@ -78,7 +78,7 @@ class App extends Component {
    };
    scrollSlowly = () => {
       const { height: cardHeight } = document
-         .querySelector('.ImageGallery')
+         .querySelector('#ImageGallery')
          .firstElementChild.getBoundingClientRect();
 
       Scroll.animateScroll.scrollMore(cardHeight * 2);

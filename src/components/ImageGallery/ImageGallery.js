@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 export default function ImageGallery({ params, openModal }) {
    return (
-      <ul className={s.ImageGallery}>
+      <ul id="ImageGallery" className={s.ImageGallery}>
          {params.map(({ id, webformatURL, largeImageURL, tags }) => (
             <ImageGalleryItem
                key={id}
