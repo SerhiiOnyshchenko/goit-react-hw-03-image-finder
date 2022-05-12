@@ -1,20 +1,14 @@
+import ImageGallery from 'components/ImageGallery/ImageGallery';
+import Searchbar from 'components/Searchbar/Searchbar';
 import React, { Component } from 'react';
 
 class App extends Component {
    state = {};
    render() {
       return (
-         <div
-            style={{
-               height: '100vh',
-               display: 'flex',
-               justifyContent: 'center',
-               alignItems: 'center',
-               fontSize: 40,
-               color: '#010101',
-            }}
-         >
-            React homework template
+         <div className="App">
+            <Searchbar />
+            <ImageGallery params={[{ url: '/', alt: 'alt' }]} />
          </div>
       );
    }
