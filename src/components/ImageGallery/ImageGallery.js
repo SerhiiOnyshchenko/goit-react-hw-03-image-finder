@@ -18,6 +18,13 @@ export default function ImageGallery({ params, openModal }) {
    );
 }
 ImageGallery.propTypes = {
-   params: PropTypes.array.isRequired,
+   params: PropTypes.arrayOf(
+      PropTypes.shape({
+         id: PropTypes.number,
+         webformatURL: PropTypes.string,
+         largeImageURL: PropTypes.string,
+         tags: PropTypes.string,
+      })
+   ),
    openModal: PropTypes.func.isRequired,
 };
