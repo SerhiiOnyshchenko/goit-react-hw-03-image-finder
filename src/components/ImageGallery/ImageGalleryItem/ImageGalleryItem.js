@@ -1,8 +1,15 @@
 import './ImageGalleryItem.css';
-export default function ImageGalleryItem({ url, alt }) {
+import PropTypes from 'prop-types';
+
+export default function ImageGalleryItem({ webformatURL, alt, onOpen }) {
    return (
-      <li className="ImageGalleryItem">
-         <img className="ImageGalleryItem-image" src={url} alt={alt} />
+      <li className="ImageGalleryItem" onClick={onOpen}>
+         <img className="ImageGalleryItem-image" src={webformatURL} alt={alt} />
       </li>
    );
 }
+ImageGalleryItem.propTypes = {
+   webformatURL: PropTypes.string.isRequired,
+   alt: PropTypes.string.isRequired,
+   onOpen: PropTypes.func.isRequired,
+};
