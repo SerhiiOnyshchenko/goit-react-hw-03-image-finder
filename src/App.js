@@ -12,7 +12,7 @@ class App extends Component {
    state = {
       searchName: '',
       countPage: 1,
-      per_page: 4,
+      per_page: 12,
       ImagesList: [],
       showModal: false,
       showLoadMore: false,
@@ -86,13 +86,13 @@ class App extends Component {
    };
    openModal = (url, alt) => {
       const openModalItem = { url, alt };
-      this.setState(({ showModal }) => ({
-         showModal: !showModal,
+      this.setState({
+         showModal: true,
          openModalItem,
-      }));
+      });
    };
    closeModal = () => {
-      this.setState(({ showModal }) => ({ showModal: !showModal }));
+      this.setState({ showModal: false });
    };
    render() {
       const { ImagesList, showModal, openModalItem, showLoadMore, loading } =

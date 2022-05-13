@@ -17,6 +17,13 @@
 	max-height: calc(100vh - 24px);
 	animation: animateModal 1s linear;
 }
+.Overlay.CloseAnimate {
+	animation: animateOverlayClose 1s linear;
+}
+.Modal.CloseAnimate {
+	animation: animateModalClose 1s linear;
+}
+
 @keyframes animateOverlay {
 	0% {
 		opacity: 0.1;
@@ -32,4 +39,20 @@
 	100% {
 		transform: scale(1);
 	}
-} ;
+}
+@keyframes animateOverlayClose {
+	0% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0.1;
+	}
+}
+@keyframes animateModalClose {
+	0% {
+		transform: scale(1);
+	}
+	100% {
+		transform: scale(0.9);
+	}
+}

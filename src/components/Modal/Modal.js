@@ -14,19 +14,35 @@ class Modal extends Component {
    }
    handelKeyUp = e => {
       if (e.code === 'Escape') {
-         this.props.onClose();
+         this.addCloseClass();
+         setTimeout(() => {
+            this.props.onClose();
+         }, 1000);
       }
    };
    handleBackdropClick = e => {
       if (e.target === e.currentTarget) {
-         this.props.onClose();
+         this.addCloseClass();
+         setTimeout(() => {
+            this.props.onClose();
+         }, 1000);
       }
+   };
+   addCloseClass = () => {
+      const Overlay = document.querySelector('#CloseAnimateOverlay');
+      const Modal = document.querySelector('#CloseAnimateModal');
+      Overlay.classList.add(`${s.CloseAnimate}`);
+      Modal.classList.add(`${s.CloseAnimate}`);
    };
    render() {
       const { url, alt } = this.props;
       return createPortal(
-         <div className={s.Overlay} onClick={this.handleBackdropClick}>
-            <div className={s.Modal}>
+         <div
+            id="CloseAnimateOverlay"
+            className={s.Overlay}
+            onClick={this.handleBackdropClick}
+         >
+            <div id="CloseAnimateModal" className={s.Modal}>
                <img src={url} alt={alt} />
             </div>
          </div>,
