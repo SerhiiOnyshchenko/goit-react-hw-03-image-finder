@@ -23,7 +23,7 @@ class App extends Component {
       Notiflix.Notify.failure(
          'Sorry, there are no images matching your search query. Please try again.'
       );
-      this.setState({ showLoadMore: false });
+      this.setState({ showLoadMore: false, loading: false });
    };
    onSearchName = name => {
       this.setState(
