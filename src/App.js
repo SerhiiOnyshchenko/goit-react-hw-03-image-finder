@@ -12,9 +12,8 @@ class App extends Component {
    state = {
       searchName: '',
       countPage: 1,
-      per_page: 12,
+      per_page: 4,
       ImagesList: [],
-      totalHits: 0,
       showModal: false,
       showLoadMore: false,
       loading: false,
@@ -26,67 +25,71 @@ class App extends Component {
       );
       this.setState({ showLoadMore: false });
    };
-   onSearchName = async name => {
-      await this.setState({
-         searchName: name,
-         countPage: 1,
-         ImagesList: [],
-         showLoadMore: false,
-         loading: true,
-      });
-      const { searchName, countPage, per_page } = this.state;
-      SearchApi(searchName, countPage, per_page)
-         .then(date => {
-            if (date.total === date.hits.length) {
-               this.setState({ showLoadMore: false });
-            } else {
-               this.setState({ showLoadMore: true });
-            }
-            this.setState({
-               ImagesList: date.hits,
-               totalHits: date.total,
-               loading: false,
-            });
-         })
-         .catch(this.onApiError);
+   onSearchName = name => {
+      this.setState(
+         {
+            searchName: name,
+            countPage: 1,
+            ImagesList: [],
+            showLoadMore: false,
+            loading: true,
+         },
+         () => {
+            const { searchName, countPage, per_page } = this.state;
+            SearchApi(searchName, countPage, per_page)
+               .then(date => {
+                  this.setState({
+                     ImagesList: date.hits,
+                     loading: false,
+                  });
+                  if (date.total !== date.hits.length) {
+                     this.setState({ showLoadMore: true });
+                  }
+               })
+               .catch(this.onApiError);
+         }
+      );
    };
-   loadeMore = async () => {
-      await this.setState(prev => ({
-         countPage: prev.countPage + 1,
-         showLoadMore: false,
-         loading: true,
-      }));
-      const { searchName, countPage, per_page, ImagesList, totalHits } =
-         this.state;
-      SearchApi(searchName, countPage, per_page)
-         .then(date => {
-            this.setState(prev => ({
-               ImagesList: [...prev.ImagesList, ...date.hits],
-               showLoadMore: true,
-               loading: false,
-            }));
-         })
-         .catch(this.onApiError);
-
-      if (totalHits <= ImagesList.length + per_page) {
-         this.setState({ showLoadMore: false });
-         Notiflix.Notify.info(
-            "We're sorry, but you've reached the end of search results."
-         );
-      }
+   loadeMore = () => {
+      this.setState(
+         prev => ({
+            countPage: prev.countPage + 1,
+            showLoadMore: false,
+            loading: true,
+         }),
+         () => {
+            const { searchName, countPage, per_page, ImagesList } = this.state;
+            SearchApi(searchName, countPage, per_page)
+               .then(date => {
+                  this.setState(prev => ({
+                     ImagesList: [...prev.ImagesList, ...date.hits],
+                     showLoadMore: true,
+                     loading: false,
+                  }));
+                  if (date.total <= ImagesList.length + per_page) {
+                     this.setState({ showLoadMore: false });
+                     Notiflix.Notify.info(
+                        "We're sorry, but you've reached the end of search results."
+                     );
+                  }
+               })
+               .catch(this.onApiError);
+         }
+      );
       this.scrollSlowly();
    };
    scrollSlowly = () => {
       const { height: cardHeight } = document
          .querySelector('#ImageGallery')
          .firstElementChild.getBoundingClientRect();
-
       Scroll.animateScroll.scrollMore(cardHeight * 2);
    };
    openModal = (url, alt) => {
-      const openModalItem = { url: url, alt: alt };
-      this.setState({ openModalItem });
-      this.setState(({ showModal }) => ({ showModal: !showModal }));
+      const openModalItem = { url, alt };
+      this.setState(({ showModal }) => ({
+         showModal: !showModal,
+         openModalItem,
+      }));
    };
    closeModal = () => {
       this.setState(({ showModal }) => ({ showModal: !showModal }));

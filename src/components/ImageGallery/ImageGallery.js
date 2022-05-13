@@ -9,7 +9,6 @@ export default function ImageGallery({ params, openModal }) {
             <ImageGalleryItem
                key={id}
                webformatURL={webformatURL}
-               largeImageURL={largeImageURL}
                alt={tags}
                onOpen={() => openModal(largeImageURL, tags)}
             />
