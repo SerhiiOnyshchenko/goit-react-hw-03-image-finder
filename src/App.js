@@ -1,7 +1,7 @@
 import ImageGallery from 'components/ImageGallery/ImageGallery';
 import Searchbar from 'components/Searchbar/Searchbar';
 import React, { Component } from 'react';
-import SearchApi from './components/Api/Api';
+import SearchApi from 'services/Api';
 import Notiflix from 'notiflix';
 import Button from 'components/Button/Button';
 import Modal from 'components/Modal/Modal';
@@ -11,7 +11,7 @@ import * as Scroll from 'react-scroll';
 class App extends Component {
    state = {
       searchName: '',
-      countPage: 1,
+      countPage: 0,
       per_page: 12,
       ImagesList: [],
       showModal: false,
@@ -19,65 +19,61 @@ class App extends Component {
       loading: false,
       openModalItem: { url: '', alt: '' },
    };
+
+   componentDidUpdate(prevState) {
+      const { searchName, per_page, countPage, ImagesList } = this.state;
+
+      if (prevState.countPage !== countPage || ImagesList.length === 0) {
+         SearchApi(searchName, countPage, per_page)
+            .then(date => {
+               this.setState(prev => ({
+                  ImagesList: [...prev.ImagesList, ...date.hits],
+                  totalHits: date.totalHits,
+                  loading: false,
+               }));
+               if (date.total !== date.hits.length) {
+                  this.setState({ showLoadMore: true });
+               }
+               if (countPage === 1) {
+                  Notiflix.Notify.success(
+                     `Hooray! We found ${date.totalHits} images.`
+                  );
+               }
+               if (date.total <= ImagesList.length + per_page) {
+                  this.setState({ showLoadMore: false });
+                  Notiflix.Notify.info(
+                     "We're sorry, but you've reached the end of search results."
+                  );
+               }
+            })
+            .catch(this.onApiError);
+      }
+   }
    onApiError = () => {
       Notiflix.Notify.failure(
          'Sorry, there are no images matching your search query. Please try again.'
       );
       this.setState({ showLoadMore: false, loading: false });
    };
-   onSearchName = name => {
-      this.setState(
-         {
-            searchName: name,
-            countPage: 1,
-            ImagesList: [],
-            showLoadMore: false,
-            loading: true,
-         },
-         () => {
-            const { searchName, countPage, per_page } = this.state;
-            SearchApi(searchName, countPage, per_page)
-               .then(date => {
-                  this.setState({
-                     ImagesList: date.hits,
-                     loading: false,
-                  });
-                  if (date.total !== date.hits.length) {
-                     this.setState({ showLoadMore: true });
-                  }
-               })
-               .catch(this.onApiError);
-         }
-      );
+
+   onSubmit = name => {
+      this.setState({
+         searchName: name,
+         countPage: 1,
+         ImagesList: [],
+         showLoadMore: false,
+         loading: true,
+      });
    };
-   loadeMore = () => {
-      this.setState(
-         prev => ({
-            countPage: prev.countPage + 1,
-            showLoadMore: false,
-            loading: true,
-         }),
-         () => {
-            const { searchName, countPage, per_page, ImagesList } = this.state;
-            SearchApi(searchName, countPage, per_page)
-               .then(date => {
-                  this.setState(prev => ({
-                     ImagesList: [...prev.ImagesList, ...date.hits],
-                     showLoadMore: true,
-                     loading: false,
-                  }));
-                  if (date.total <= ImagesList.length + per_page) {
-                     this.setState({ showLoadMore: false });
-                     Notiflix.Notify.info(
-                        "We're sorry, but you've reached the end of search results."
-                     );
-                  }
-               })
-               .catch(this.onApiError);
-         }
-      );
-      this.scrollSlowly();
+
+   onloadeMore = () => {
+      this.setState(prev => ({
+         countPage: prev.countPage + 1,
+         showLoadMore: false,
+         loading: true,
+      }));
    };
+
    scrollSlowly = () => {
       const { height: cardHeight } = document
          .querySelector('#ImageGallery')
@@ -99,7 +95,7 @@ class App extends Component {
          this.state;
       return (
          <div className="App">
-            <Searchbar onSubmit={this.onSearchName} />
+            <Searchbar onSubmit={this.onSubmit} />
             {showModal && (
                <Modal
                   url={openModalItem.url}
@@ -110,7 +106,7 @@ class App extends Component {
             <ImageGallery params={ImagesList} openModal={this.openModal} />
             {loading && <Loader />}
             {showLoadMore && (
-               <Button onClick={this.loadeMore}>Load more</Button>
+               <Button onClick={this.onloadeMore} title="Load more" />
             )}
          </div>
       );

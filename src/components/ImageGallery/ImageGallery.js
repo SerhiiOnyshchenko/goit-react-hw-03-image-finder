@@ -19,7 +19,7 @@ export default function ImageGallery({ params, openModal }) {
 ImageGallery.propTypes = {
    params: PropTypes.arrayOf(
       PropTypes.shape({
-         id: PropTypes.number,
+         id: PropTypes.number.isRequired,
          webformatURL: PropTypes.string,
          largeImageURL: PropTypes.string,
          tags: PropTypes.string,
