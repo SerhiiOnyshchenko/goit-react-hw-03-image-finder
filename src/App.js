@@ -26,8 +26,20 @@ class App extends Component {
       if (prevState.countPage !== countPage || ImagesList.length === 0) {
          SearchApi(searchName, countPage, per_page)
             .then(date => {
+               const filterDataHits = date.hits.map(img => {
+                  return Object.fromEntries(
+                     Object.entries(img).filter(([key]) =>
+                        [
+                           'id',
+                           'tags',
+                           'largeImageURL',
+                           'webformatURL',
+                        ].includes(key)
+                     )
+                  );
+               });
                this.setState(prev => ({
-                  ImagesList: [...prev.ImagesList, ...date.hits],
+                  ImagesList: [...prev.ImagesList, ...filterDataHits],
                   totalHits: date.totalHits,
                   loading: false,
                }));
