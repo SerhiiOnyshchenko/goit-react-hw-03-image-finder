@@ -20,7 +20,7 @@ class App extends Component {
       openModalItem: { url: '', alt: '' },
    };
 
-   componentDidUpdate(prevState) {
+   componentDidUpdate(prevProps, prevState) {
       const { searchName, per_page, countPage, ImagesList } = this.state;
 
       if (prevState.countPage !== countPage || ImagesList.length === 0) {
@@ -72,6 +72,7 @@ class App extends Component {
          showLoadMore: false,
          loading: true,
       }));
+      this.scrollSlowly();
    };
 
    scrollSlowly = () => {
