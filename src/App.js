@@ -10,8 +10,8 @@ import * as Scroll from 'react-scroll';
 
 class App extends Component {
    state = {
-      searchName: '',
-      countPage: 0,
+      searchName: ' ',
+      countPage: 1,
       per_page: 12,
       ImagesList: [],
       showModal: false,
@@ -23,7 +23,11 @@ class App extends Component {
    componentDidUpdate(prevProps, prevState) {
       const { searchName, per_page, countPage, ImagesList } = this.state;
 
-      if (prevState.countPage !== countPage || ImagesList.length === 0) {
+      if (
+         prevState.countPage !== countPage ||
+         prevState.searchName !== searchName
+      ) {
+         this.setState({ showLoadMore: false, loading: true });
          SearchApi(searchName, countPage, per_page)
             .then(date => {
                const filterDataHits = date.hits.map(img => {
@@ -69,20 +73,20 @@ class App extends Component {
    };
 
    onSubmit = name => {
-      this.setState({
-         searchName: name,
-         countPage: 1,
-         ImagesList: [],
-         showLoadMore: false,
-         loading: true,
-      });
+      this.setState(prev =>
+         prev.searchName === name && prev.countPage === 1
+            ? { countPage: 1 }
+            : {
+                 searchName: name,
+                 countPage: 1,
+                 ImagesList: [],
+              }
+      );
    };
 
    onloadeMore = () => {
       this.setState(prev => ({
          countPage: prev.countPage + 1,
-         showLoadMore: false,
-         loading: true,
       }));
       this.scrollSlowly();
    };
